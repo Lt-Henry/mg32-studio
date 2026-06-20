@@ -52,6 +52,8 @@ namespace mg32
         Editor(QWidget *parent = nullptr);
         virtual ~Editor();
 
+        void dropEvent(QDropEvent *event) override;
+
         private:
 
         LuaHighlighter* m_highlighter;

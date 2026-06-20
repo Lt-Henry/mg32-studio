@@ -1,5 +1,9 @@
 #include "editor.hpp"
 
+#include <QMimeData>
+#include <QFile>
+#include <QDebug>
+
 using namespace mg32;
 using namespace std;
 
@@ -71,4 +75,23 @@ Editor::Editor(QWidget *parent) : QPlainTextEdit(parent)
 Editor::~ Editor()
 {
 
+}
+
+void Editor::dropEvent(QDropEvent *event)
+{
+    if(event->mimeData()->hasUrls()) {
+        QUrl source = event->mimeData()->urls()[0];
+
+        if (source.fileName() == "main.lua") {
+            qInfo()<<"loading..."<<source.path();
+
+            QFile file(source.path());
+
+            if (file.open(QFile::ReadOnly)) {
+                setPlainText(file.readAll());
+            }
+
+            file.close();
+        }
+    }
 }
