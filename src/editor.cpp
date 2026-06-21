@@ -1,4 +1,5 @@
 #include "editor.hpp"
+#include "core.hpp"
 
 #include <QMimeData>
 #include <QFile>
@@ -89,6 +90,7 @@ void Editor::dropEvent(QDropEvent *event)
 
             if (file.open(QFile::ReadOnly)) {
                 setPlainText(file.readAll());
+                Core::get()->setProject(source.path());
             }
 
             file.close();

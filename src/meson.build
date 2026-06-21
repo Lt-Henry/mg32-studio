@@ -4,6 +4,6 @@ qt6_dep = dependency('qt6', modules: ['Core', 'Gui','Widgets'])
 
 compiler = meson.get_compiler('cpp')
 
-executable('mg32-studio', ['editor.cpp','mainwindow.cpp','main.cpp'], dependencies: [qt6_dep], install: true)
+executable('mg32-studio', ['editor.cpp','mainwindow.cpp','core.cpp','main.cpp'], dependencies: [qt6_dep], install: true)
 
 
