@@ -9,7 +9,7 @@ namespace mg32
 {
     class Core: public QObject
     {
-
+        Q_OBJECT
         public:
 
         static Core* get();
@@ -25,6 +25,10 @@ namespace mg32
 
         QString m_path;
         QProcess m_process;
+
+        public slots:
+
+        void openProject(const QString& file);
     };
 }
 

@@ -2,6 +2,7 @@
 
 #include <QStringList>
 #include <QFileInfo>
+#include <QDebug>
 
 using namespace mg32;
 using namespace std;
@@ -35,4 +36,9 @@ void Core::run()
         args << m_path;
         m_process.start("mg32",args);
     }
+}
+
+void Core::openProject(const QString& file)
+{
+    qDebug()<<"opening "<<file;
 }

@@ -71,6 +71,12 @@ Editor::Editor(QWidget *parent) : QPlainTextEdit(parent)
 
     m_highlighter = new LuaHighlighter(document());
 
+    connect(this, &QPlainTextEdit::textChanged, []()
+    {
+        qDebug()<<"document changed!";
+
+    });
+
 }
 
 Editor::~ Editor()

@@ -5,6 +5,7 @@
 #include "editor.hpp"
 
 #include <QMainWindow>
+#include <QPushButton>
 
 namespace mg32
 {
@@ -18,6 +19,7 @@ namespace mg32
         private:
 
         Editor* m_editor;
+        QPushButton* m_buttonSave;
     };
 }
 
