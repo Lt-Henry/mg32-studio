@@ -30,6 +30,10 @@ void Core::setProject(QString path)
 
 void Core::run()
 {
+    emit saveRequest();
+
+    qDebug()<<"ready:"<<ready();
+
     if (m_process.state() == QProcess::NotRunning) {
         m_process.setWorkingDirectory(QFileInfo(m_path).path());
         QStringList args;
@@ -38,7 +42,31 @@ void Core::run()
     }
 }
 
-void Core::openProject(const QString& file)
+void Core::acquire(QObject* who)
 {
-    qDebug()<<"opening "<<file;
+    m_ready[who] = false;
+}
+
+void Core::release(QObject* who)
+{
+    m_ready[who] = true;
+}
+
+bool Core::ready()
+{
+    bool value = true;
+
+    for (auto it = m_ready.begin(); it != m_ready.end(); it++) {
+        value = value and it.value();
+    }
+
+    return value;
+}
+
+void Core::openProject(const QString& path)
+{
+    qDebug()<<"opening "<<path;
+    setProject(path);
+
+    emit projectLoaded(path);
 }

@@ -4,6 +4,7 @@
 #include <QString>
 #include <QProcess>
 #include <QObject>
+#include <QMap>
 
 namespace mg32
 {
@@ -18,6 +19,10 @@ namespace mg32
 
         void run();
 
+        void acquire(QObject* who);
+        void release(QObject* who);
+        bool ready();
+
         private:
         Core(QObject* parent = nullptr);
 
@@ -25,10 +30,16 @@ namespace mg32
 
         QString m_path;
         QProcess m_process;
+        QMap<QObject*,bool> m_ready;
+
+        signals:
+
+        void projectLoaded(const QString& path);
+        void saveRequest();
 
         public slots:
 
-        void openProject(const QString& file);
+        void openProject(const QString& path);
     };
 }
 

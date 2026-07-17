@@ -10,6 +10,7 @@ using namespace std;
 
 LuaHighlighter::LuaHighlighter(QTextDocument* parent) : QSyntaxHighlighter(parent)
 {
+
     m_keywords << "function" << "end"<<"if"<<"else"<<"elseif"<<"then"<<"for"<<"while"<<"do"<<"local"<<"or"<<"and"<<"not";
     m_ops<<"="<<"\\+"<<"\\-"<<"\\+"<<"\\/"<<"=="<<"<"<<">";
 
@@ -57,8 +58,10 @@ void LuaHighlighter::highlightBlock(const QString &text)
     }
 }
 
-Editor::Editor(QWidget *parent) : QPlainTextEdit(parent)
+Editor::Editor(QWidget *parent) : QPlainTextEdit(parent), m_first(true)
 {
+    setAcceptDrops(true);
+
     setFont(QFont("Hack", 12));
 
     QTextCharFormat defaultFormat;
@@ -71,17 +74,35 @@ Editor::Editor(QWidget *parent) : QPlainTextEdit(parent)
 
     m_highlighter = new LuaHighlighter(document());
 
-    connect(this, &QPlainTextEdit::textChanged, []()
+    connect(this, &QPlainTextEdit::textChanged, [this]()
     {
-        qDebug()<<"document changed!";
+        if (m_first) {
+            m_first = false;
+        }
+        else {
+
+            if (m_clean) {
+                qDebug()<<"document is dirty!";
+                Core::get()->acquire(this);
+            }
+            m_clean = false;
+        }
 
     });
 
+    connect(Core::get(),&Core::projectLoaded,this,&Editor::onProjectLoaded);
+    connect(Core::get(),&Core::saveRequest,this,&Editor::onSaveRequested);
 }
 
 Editor::~ Editor()
 {
 
+}
+
+void Editor::dragEnterEvent(QDragEnterEvent *event)
+{
+    qDebug()<<"drag";
+    event->acceptProposedAction();
 }
 
 void Editor::dropEvent(QDropEvent *event)
@@ -95,11 +116,56 @@ void Editor::dropEvent(QDropEvent *event)
             QFile file(source.path());
 
             if (file.open(QFile::ReadOnly)) {
+                QPlainTextEdit::dropEvent(event);
+                m_first = true;
+                m_clean = true;
+                m_path = source.path();
                 setPlainText(file.readAll());
                 Core::get()->setProject(source.path());
+
+                event->acceptProposedAction();
             }
 
             file.close();
         }
     }
+
+}
+
+void Editor::save()
+{
+    if (!m_clean and m_path!="") {
+
+        QFile file(m_path);
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream stream(&file);
+            stream << toPlainText();
+            file.close();
+
+            Core::get()->release(this);
+            m_clean = true;
+        }
+
+    }
+}
+
+void Editor::onProjectLoaded(const QString& path)
+{
+
+    QFile file(path);
+
+    if (file.open(QFile::ReadOnly)) {
+        m_first = true;
+        m_clean = true;
+        m_path = path;
+        setPlainText(file.readAll());
+        file.close();
+    }
+
+}
+
+void Editor::onSaveRequested()
+{
+    qDebug()<<"saving requested...";
+    save();
 }

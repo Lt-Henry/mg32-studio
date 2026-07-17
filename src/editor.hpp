@@ -52,11 +52,22 @@ namespace mg32
         Editor(QWidget *parent = nullptr);
         virtual ~Editor();
 
+        void dragEnterEvent(QDragEnterEvent *event) override;
         void dropEvent(QDropEvent *event) override;
+
+        void save();
 
         private:
 
         LuaHighlighter* m_highlighter;
+        bool m_first;
+        bool m_clean;
+        QString m_path;
+
+        public slots:
+
+        void onProjectLoaded(const QString& path);
+        void onSaveRequested();
     };
 }
 

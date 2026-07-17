@@ -42,12 +42,11 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
     btn = new QPushButton(this);
     m_buttonSave = btn;
-    btn->setEnabled(false);
+    //btn->setEnabled(false);
     btn->setIcon(QIcon::fromTheme("document-save"));
     connect(btn, &QPushButton::clicked, []()
     {
-        qDebug()<<"save";
-
+        emit Core::get()->saveRequest();
     });
     toolbar->addWidget(btn);
 
@@ -70,6 +69,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
     m_editor = new Editor(this);
     layout->addLayout(toolbar);
     layout->addWidget(m_editor);
+    m_editor->setFocus();
+    m_editor->setFocusPolicy(Qt::StrongFocus);
+    m_editor->ensureCursorVisible();
 
     setCentralWidget(centralWidget);
 }
