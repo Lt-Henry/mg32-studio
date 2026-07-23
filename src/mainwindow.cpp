@@ -1,4 +1,5 @@
 #include "mainwindow.hpp"
+#include "newprojectdialog.hpp"
 #include "core.hpp"
 
 #include <QVBoxLayout>
@@ -20,10 +21,11 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
     btn = new QPushButton(this);
     btn->setIcon(QIcon::fromTheme("document-new"));
-    connect(btn, &QPushButton::clicked, []()
+    connect(btn, &QPushButton::clicked, [this]()
     {
-        qDebug()<<"new";
+        NewProjectDialog dialog(this);
 
+        dialog.exec();
     });
     toolbar->addWidget(btn);
 
