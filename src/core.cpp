@@ -28,6 +28,11 @@ void Core::setProject(QString path)
     m_path = path;
 }
 
+void Core::createProject(QString path)
+{
+
+}
+
 void Core::run()
 {
     emit saveRequest();

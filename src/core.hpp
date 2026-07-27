@@ -16,6 +16,7 @@ namespace mg32
         static Core* get();
 
         void setProject(QString path);
+        void createProject(QString path);
 
         void run();
 
