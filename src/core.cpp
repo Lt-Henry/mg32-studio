@@ -2,6 +2,9 @@
 
 #include <QStringList>
 #include <QFileInfo>
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
 #include <QDebug>
 
 using namespace mg32;
@@ -28,9 +31,27 @@ void Core::setProject(QString path)
     m_path = path;
 }
 
-void Core::createProject(QString path)
+void Core::createProject(QString path,QString name)
 {
+    QDir base(path);
+    base.mkdir(name);
 
+    base = QDir(path+"/"+name);
+
+    QFile file(base.filePath("main.lua"));
+
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+
+        QTextStream stream(&file);
+        stream << "-- MG32 Studio:" << name <<Qt::endl;
+        file.close();
+
+    } else {
+        qDebug() << "cannot crate main.lua";
+        return;
+    }
+
+    openProject(path+"/"+name+"/main.lua");
 }
 
 void Core::run()

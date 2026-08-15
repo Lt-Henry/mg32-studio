@@ -28,7 +28,7 @@ NewProjectDialog::NewProjectDialog(QWidget* parent)
     m_txtName->setText("NewProject");
     connect(m_txtName, &QLineEdit::textEdited, [this]()
     {
-
+        m_btnCreate->setEnabled(isAvailable());
     });
 
     row->addWidget(m_txtName);
@@ -41,7 +41,7 @@ NewProjectDialog::NewProjectDialog(QWidget* parent)
     m_txtPath->setText(QDir::homePath());
     connect(m_txtPath, &QLineEdit::textEdited, [this]()
     {
-
+        m_btnCreate->setEnabled(isAvailable());
     });
 
     row->addWidget(m_txtPath);
@@ -68,10 +68,11 @@ NewProjectDialog::NewProjectDialog(QWidget* parent)
     row = new QHBoxLayout();
     row->addStretch();
     m_btnCreate = new QPushButton("Create");
-    m_btnCreate->setEnabled(false);
+    m_btnCreate->setEnabled(isAvailable());
     connect(m_btnCreate, &QPushButton::clicked, [this]()
     {
-        //Core::get()->createProject();
+        Core::get()->createProject(m_txtPath->text(), m_txtName->text());
+        done(0);
     });
     row->addWidget(m_btnCreate);
 
@@ -93,5 +94,13 @@ NewProjectDialog::~NewProjectDialog()
 
 bool NewProjectDialog::isAvailable()
 {
-    return false;
+    QDir basepath(m_txtPath->text());
+
+    if (!basepath.exists()) {
+        return false;
+    }
+
+    QDir completepath(m_txtPath->text() + "/" +m_txtName->text());
+
+    return (!completepath.exists());
 }
