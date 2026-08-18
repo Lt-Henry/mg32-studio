@@ -63,6 +63,7 @@ Editor::Editor(QWidget *parent) : QPlainTextEdit(parent), m_first(true)
     setAcceptDrops(true);
 
     setFont(QFont("Hack", 12));
+    setTabStopDistance(fontMetrics().horizontalAdvance(' ') * 4);
 
     QTextCharFormat defaultFormat;
     defaultFormat.setForeground(QColor("#696a6a"));

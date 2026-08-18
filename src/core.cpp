@@ -43,7 +43,9 @@ void Core::createProject(QString path,QString name)
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 
         QTextStream stream(&file);
-        stream << "-- MG32 Studio:" << name <<Qt::endl;
+        stream << "-- MG32 Studio:" << name<<"\n\n"
+        <<"function  main()\n\n\twhile true do\n\tframe()\n\tend\nend\n"<<
+        Qt::endl;
         file.close();
 
     } else {
