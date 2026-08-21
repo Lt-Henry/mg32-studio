@@ -14,7 +14,13 @@ mg32::Core* mg32::Core::m_core = nullptr;
 
 Core::Core(QObject* parent):QObject(parent)
 {
+    connect(&m_process,&QProcess::readyReadStandardOutput,[this](){
+        qInfo()<<m_process.readAllStandardOutput();
+    });
 
+    connect(&m_process,&QProcess::readyReadStandardError,[this](){
+        qDebug()<<m_process.readAllStandardError();
+    });
 }
 
 Core* mg32::Core::get()

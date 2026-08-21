@@ -5,6 +5,7 @@
 #include "editor.hpp"
 
 #include <QMainWindow>
+#include <QPlainTextEdit>
 #include <QPushButton>
 
 namespace mg32
@@ -20,6 +21,9 @@ namespace mg32
 
         Editor* m_editor;
         QPushButton* m_buttonSave;
+
+        QPlainTextEdit* m_txtOutput;
+        QPlainTextEdit* m_txtError;
     };
 }
 

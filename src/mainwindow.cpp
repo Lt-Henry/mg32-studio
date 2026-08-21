@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QTabWidget>
 #include <QFileDialog>
 #include <QIcon>
 
@@ -74,6 +75,15 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
     m_editor->setFocus();
     m_editor->setFocusPolicy(Qt::StrongFocus);
     m_editor->ensureCursorVisible();
+
+    QTabWidget* tabs = new QTabWidget();
+    layout->addWidget(tabs);
+
+    m_txtOutput = new QPlainTextEdit();
+    tabs->addTab(m_txtOutput, "Output");
+
+    m_txtError = new QPlainTextEdit();
+    tabs->addTab(m_txtError, "Error");
 
     setCentralWidget(centralWidget);
 }
