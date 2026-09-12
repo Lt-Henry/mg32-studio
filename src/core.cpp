@@ -15,11 +15,23 @@ mg32::Core* mg32::Core::m_core = nullptr;
 Core::Core(QObject* parent):QObject(parent)
 {
     connect(&m_process,&QProcess::readyReadStandardOutput,[this](){
-        qInfo()<<m_process.readAllStandardOutput();
+        QString raw(m_process.readAllStandardOutput());
+        QStringList lines = raw.split("\n");
+
+        for (QString & line : lines) {
+            outputAvailable(line);
+            qInfo()<<line;
+        }
     });
 
     connect(&m_process,&QProcess::readyReadStandardError,[this](){
-        qDebug()<<m_process.readAllStandardError();
+        QString raw(m_process.readAllStandardError());
+        QStringList lines = raw.split("\n");
+
+        for (QString & line : lines) {
+            errorAvailable(line);
+            qDebug()<<line;
+        }
     });
 }
 

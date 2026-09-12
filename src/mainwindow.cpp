@@ -57,9 +57,11 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
     btn = new QPushButton(this);
     btn->setIcon(QIcon::fromTheme("media-playback-playing"));
-    connect(btn, &QPushButton::clicked, []()
+    connect(btn, &QPushButton::clicked, [this]()
     {
         qDebug()<<"clicked";
+        m_txtOutput->clear();
+        m_txtError->clear();
         Core::get()->run();
     });
     toolbar->addWidget(btn);
@@ -84,6 +86,16 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
     m_txtError = new QPlainTextEdit();
     tabs->addTab(m_txtError, "Error");
+
+    connect(Core::get(),&Core::outputAvailable,[this](const QString & line)
+    {
+        m_txtOutput->appendPlainText(line);
+    });
+
+    connect(Core::get(),&Core::errorAvailable,[this](const QString & line)
+    {
+        m_txtError->appendPlainText(line);
+    });
 
     setCentralWidget(centralWidget);
 }

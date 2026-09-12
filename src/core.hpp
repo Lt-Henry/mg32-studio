@@ -38,6 +38,9 @@ namespace mg32
         void projectLoaded(const QString& path);
         void saveRequest();
 
+        void outputAvailable(const QString& line);
+        void errorAvailable(const QString& line);
+
         public slots:
 
         void openProject(const QString& path);
