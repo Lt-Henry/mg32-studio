@@ -4,6 +4,8 @@
 #include <QMimeData>
 #include <QFile>
 #include <QDebug>
+#include <QTextBlock>
+#include <QTextEdit>
 
 using namespace mg32;
 using namespace std;
@@ -77,6 +79,8 @@ Editor::Editor(QWidget *parent) : QPlainTextEdit(parent), m_first(true)
 
     connect(this, &QPlainTextEdit::textChanged, [this]()
     {
+        setExtraSelections({});
+
         if (m_first) {
             m_first = false;
         }
@@ -169,4 +173,25 @@ void Editor::onSaveRequested()
 {
     qDebug()<<"saving requested...";
     save();
+}
+
+void Editor::highlightLine(int line)
+{
+    QTextBlock block = document()->findBlockByNumber(line - 1);
+
+    if (!block.isValid()) {
+        return;
+    }
+
+    QTextEdit::ExtraSelection selection;
+    selection.format.setBackground(QColor("#7a2e2e"));
+    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+    selection.cursor = QTextCursor(block);
+    selection.cursor.clearSelection();
+
+    setExtraSelections({selection});
+
+    QTextCursor cursor(block);
+    setTextCursor(cursor);
+    ensureCursorVisible();
 }

@@ -68,6 +68,7 @@ namespace mg32
 
         void onProjectLoaded(const QString& path);
         void onSaveRequested();
+        void highlightLine(int line);
     };
 }
 

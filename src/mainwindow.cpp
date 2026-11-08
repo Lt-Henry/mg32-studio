@@ -6,7 +6,9 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QTabWidget>
+#include <QSplitter>
 #include <QFileDialog>
+#include <QRegularExpression>
 #include <QIcon>
 
 using namespace mg32;
@@ -73,13 +75,20 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
     m_editor = new Editor(this);
     layout->addLayout(toolbar);
-    layout->addWidget(m_editor);
+
+    QSplitter* splitter = new QSplitter(Qt::Vertical, centralWidget);
+    splitter->addWidget(m_editor);
+    layout->addWidget(splitter);
+
     m_editor->setFocus();
     m_editor->setFocusPolicy(Qt::StrongFocus);
     m_editor->ensureCursorVisible();
 
     QTabWidget* tabs = new QTabWidget();
-    layout->addWidget(tabs);
+    splitter->addWidget(tabs);
+    splitter->setStretchFactor(0, 3);
+    splitter->setStretchFactor(1, 1);
+    splitter->setChildrenCollapsible(false);
 
     m_txtOutput = new QPlainTextEdit();
     tabs->addTab(m_txtOutput, "Output");
@@ -95,6 +104,19 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
     connect(Core::get(),&Core::errorAvailable,[this](const QString & line)
     {
         m_txtError->appendPlainText(line);
+
+        // Errors have the format TEXT:PATH:LINE:DETAILS
+        QRegularExpression expression("^(.*):([^:]*):(\\d+):(.*)$");
+        QRegularExpressionMatch match = expression.match(line);
+
+        if (match.hasMatch()) {
+            bool ok = false;
+            int lineNumber = match.captured(3).toInt(&ok);
+
+            if (ok and lineNumber > 0) {
+                m_editor->highlightLine(lineNumber);
+            }
+        }
     });
 
     setCentralWidget(centralWidget);
