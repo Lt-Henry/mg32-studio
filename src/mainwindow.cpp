@@ -10,6 +10,7 @@
 #include <QFileDialog>
 #include <QRegularExpression>
 #include <QIcon>
+#include <QTextStream>
 
 using namespace mg32;
 using namespace std;
@@ -103,7 +104,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
     connect(Core::get(),&Core::errorAvailable,[this](const QString & line)
     {
-        m_txtError->appendPlainText(line);
+        //m_txtError->appendPlainText(line);
 
         // Errors have the format TEXT:PATH:LINE:DETAILS
         QRegularExpression expression("^(.*):([^:]*):(\\d+):(.*)$");
@@ -112,9 +113,16 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
         if (match.hasMatch()) {
             bool ok = false;
             int lineNumber = match.captured(3).toInt(&ok);
+            QString message = match.captured(4);
 
             if (ok and lineNumber > 0) {
                 m_editor->highlightLine(lineNumber);
+                QString error;
+                QTextStream stream(&error);
+
+                stream<<"line "<<lineNumber<<":"<<message;
+
+                m_txtError->appendPlainText(error);
             }
         }
     });

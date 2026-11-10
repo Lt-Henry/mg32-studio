@@ -29,7 +29,7 @@ LuaHighlighter::LuaHighlighter(QTextDocument* parent) : QSyntaxHighlighter(paren
     m_constFormat.setForeground(QColor("#d95763"));
     m_constFormat.setFontWeight(QFont::Bold);
 
-    m_commentFormat.setForeground(QColor("#9badb7"));
+    m_commentFormat.setForeground(QColor("#df7126"));
 
     m_rules << qMakePair(QRegularExpression("\\b(" + m_keywords.join("|") + ")\\b"), m_keywordFormat)
                 << qMakePair(QRegularExpression("(" + m_ops.join("|") + ")"), m_opFormat)
@@ -184,7 +184,8 @@ void Editor::highlightLine(int line)
     }
 
     QTextEdit::ExtraSelection selection;
-    selection.format.setBackground(QColor("#7a2e2e"));
+    selection.format.setBackground(QColor("#d95763"));
+    selection.format.setForeground(QColor("#ffffff"));
     selection.format.setProperty(QTextFormat::FullWidthSelection, true);
     selection.cursor = QTextCursor(block);
     selection.cursor.clearSelection();
